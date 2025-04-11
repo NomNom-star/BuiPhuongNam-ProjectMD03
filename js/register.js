@@ -8,12 +8,14 @@ document.getElementById('registerForm').addEventListener('submit', function(e) {
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
     const confirmPassword = document.getElementById('confirmPassword').value;
-    let users = localStorage.getItem("users");
+    let users = JSON.parse(localStorage.getItem("users")) || [];
     
     let isValid = true;
 
-    if (users.find()) {
-        
+    const userExists = users.find(user => user.email === email); 
+    if (userExists) {
+        showError('emailError', 'Email đã tồn tại');
+        isValid = false;
     }
 
     if (!email) {
