@@ -4,29 +4,30 @@ let transactions = JSON.parse(localStorage.getItem('transactions')) || [];
 let currentMonth = ""; 
 let editingCategoryId = null;
 let deleteCategoryId = null;
-let deleteCategoryMonth = null;
 let deleteTransactionId = null;
 let isDeleteCategory = false;
 let currentPage = 1;
 const itemsPerPage = 5;
-let totalCatAmout = JSON.parse(localStorage.getItem('totalCatAmout')) || null;
 
-document.getElementById('logoutBtn').addEventListener('click', function() {
+// Sự kiện khi nhấn nút đăng xuất
+document.getElementById('logoutBtn').addEventListener('click', () => {
     document.getElementById('logoutNotification').style.display = 'block';
 });
 
-document.getElementById('confirmLogout').addEventListener('click', function() {
+// Xác nhận đăng xuất
+document.getElementById('confirmLogout').addEventListener('click', () => {
     localStorage.removeItem('isLoggedIn');
     window.location.href = 'login.html';
 });
 
-document.getElementById('cancelLogout').addEventListener('click', function() {
+// Hủy đăng xuất
+document.getElementById('cancelLogout').addEventListener('click', () => {
     document.getElementById('logoutNotification').style.display = 'none';
 }); 
 
+// Kiểm tra trạng thái đăng nhập
 function checkLogin() {
-    const isLoggedIn = localStorage.getItem('isLoggedIn');
-    if (!isLoggedIn) {
+    if (!localStorage.getItem('isLoggedIn')) {
         window.location.href = 'login.html';
     }
 }
@@ -36,8 +37,8 @@ function saveToLocalStorage() {
     localStorage.setItem('monthlyCategories', JSON.stringify(monthlyCategories));
 }
 
-//Lưu ngân sách
-document.getElementById('saveBudgetBtn').addEventListener('click', function() {
+// Lưu ngân sách
+document.getElementById('saveBudgetBtn').addEventListener('click', () => {
     const budgetInput = document.getElementById('budgetInput').value;
     const monthInput = document.getElementById('monthSelect').value; 
     const totalBudgetError = document.getElementById('totalBudgetError'); 
@@ -46,7 +47,8 @@ document.getElementById('saveBudgetBtn').addEventListener('click', function() {
     totalBudgetError.style.display = 'none';
     document.getElementById("budgetInput").value = "";
 
-    if (!budgetInput || isNaN(budgetInput) || parseFloat(budgetInput) <= 0 || budgetInput %1 != 0) {
+    // Kiểm tra tính hợp lệ của ngân sách
+    if (!budgetInput || isNaN(budgetInput) || parseFloat(budgetInput) <= 0 || budgetInput % 1 !== 0) {
         totalBudgetError.textContent = 'Chưa nhập ngân sách tháng hợp lệ!';
         totalBudgetError.style.display = 'block'; 
         return;
@@ -60,7 +62,7 @@ document.getElementById('saveBudgetBtn').addEventListener('click', function() {
     if (existingMonth) {
         existingMonth.amount = currentBudget;
     } else {
-        monthlyCategories.push({id: Date.now() + Math.floor(Math.random() * 1000), month: monthInput, categories: [], amount: currentBudget }); 
+        monthlyCategories.push({ id: Date.now(), month: monthInput, categories: [], amount: currentBudget }); 
     }
 
     document.getElementById('remainingAmount').textContent = currentBudget.toLocaleString() + ' VND';
@@ -69,20 +71,17 @@ document.getElementById('saveBudgetBtn').addEventListener('click', function() {
 
 // Sự kiện khi chọn tháng
 document.getElementById('monthSelect').addEventListener('change', function() {
-    totalBudgetError.style.display = 'none'; 
     const selectedMonth = this.value;
     currentMonth = selectedMonth;
+    populateCategorySelect();
     displayCategoriesByMonth(selectedMonth);
-
-    const monthData = monthlyCategories.find(item => item.month === selectedMonth);
-    if (monthData) {
-        document.getElementById('remainingAmount').textContent = monthData.amount.toLocaleString() + ' VND';
-    } else {
-        document.getElementById('remainingAmount').textContent = '0 VND';
-    }
+    updateRemainingAmount();
+    displayTransactionsByMonth(selectedMonth);
+    updateCategoryList(selectedMonth);
 });
+
 // Sự kiện thêm danh mục
-document.getElementById('addCategoryBtn').addEventListener('click', function() {
+document.getElementById('addCategoryBtn').addEventListener('click', () => {
     const categoryName = document.getElementById('categoryName').value;
     const categoryAmount = document.getElementById('categoryLimit').value;
     const monthData = monthlyCategories.find(item => item.month === currentMonth); 
@@ -96,30 +95,24 @@ document.getElementById('addCategoryBtn').addEventListener('click', function() {
     // Kiểm tra tính hợp lệ của số tiền
     const amount = parseFloat(categoryAmount);
     if (isNaN(amount) || amount <= 0 || amount % 1 !== 0) {
-        alert("Số tiền không hợp lệ. Vui lòng nhập số nguyên dương.");
+        alert("Số tiền không hợp lệ. Vui lòng nhập số tiền hợp lệ.");
         return; 
     }
    
     // Tạo đối tượng danh mục mới
-    const category = { id: Date.now() + Math.floor(Math.random() * 1000) + Math.floor(Math.random() * 1000), name: categoryName, amount: amount };
+    const category = { id: Date.now(), name: categoryName, amount: amount };
 
     // Cập nhật danh mục cho tháng hiện tại
     if (monthData) {
         monthData.categories.push(category); 
     } else {
-        monthlyCategories.push({
-            id: Date.now() + Math.floor(Math.random() * 1000), 
-            month: currentMonth,
-            categories: [category], 
-            amount: 0
-        });
+        monthlyCategories.push({ id: Date.now(), month: currentMonth, categories: [category], amount: 0 });
     }
 
     // Hiển thị danh sách danh mục
     updateCategoryList(currentMonth);
     saveToLocalStorage(); 
     populateCategorySelect();
-
     document.getElementById('categoryName').value = '';
     document.getElementById('categoryLimit').value = '';
 });
@@ -144,6 +137,7 @@ function updateCategoryList(month) {
         });
     }
 }
+
 // Hàm sửa danh mục
 function editCategory(month, id) {
     const monthData = monthlyCategories.find(item => item.month === month);
@@ -159,7 +153,7 @@ function editCategory(month, id) {
 }
 
 // Sự kiện lưu sửa danh mục
-document.getElementById('saveEditCategoryBtn').addEventListener('click', function() {
+document.getElementById('saveEditCategoryBtn').addEventListener('click', () => {
     const updatedName = document.getElementById('editCategoryName').value;
     const updatedLimit = document.getElementById('editCategoryLimit').value;
     const errorMessageElement = document.getElementById('error-message');
@@ -167,6 +161,7 @@ document.getElementById('saveEditCategoryBtn').addEventListener('click', functio
     errorMessageElement.style.display = 'none';
     errorMessageElement.textContent = '';
 
+    // Kiểm tra tính hợp lệ của thông tin sửa
     if (!updatedName || !updatedLimit || isNaN(updatedLimit) || parseFloat(updatedLimit) <= 0 || updatedLimit % 1 !== 0) {
         errorMessageElement.textContent = 'Vui lòng nhập số tiền hợp lệ';
         errorMessageElement.style.display = 'block'; 
@@ -189,7 +184,7 @@ document.getElementById('saveEditCategoryBtn').addEventListener('click', functio
 });
 
 // Sự kiện hủy sửa danh mục
-document.getElementById('cancelEditCategoryBtn').addEventListener('click', function() {
+document.getElementById('cancelEditCategoryBtn').addEventListener('click', () => {
     document.querySelector('.edit-category-container').style.display = 'none'; 
 });
 
@@ -202,7 +197,7 @@ function removeCategory(month, id) {
 }
 
 // Pop-up xác nhận xóa
-document.getElementById('confirmDeleteBtn').addEventListener('click', function() {
+document.getElementById('confirmDeleteBtn').addEventListener('click', () => {
     if (isDeleteCategory) {
         // Xóa danh mục
         const monthData = monthlyCategories.find(item => item.month === deleteCategoryMonth);
@@ -215,17 +210,14 @@ document.getElementById('confirmDeleteBtn').addEventListener('click', function()
     } else {
         // Xóa giao dịch
         const transactionData = transactions.find(item => item.id === deleteTransactionId);
-
         if (transactionData) {
             transactions = transactions.filter(transaction => transaction.id !== deleteTransactionId);
-        
             localStorage.setItem('transactions', JSON.stringify(transactions));
             saveToLocalStorage();
-        
             displayTransactionsByMonth(currentMonth); 
-        
             updateRemainingAmount(); 
-            checkOverBudgetCategory(currentMonth);      
+            checkOverBudgetCategory(currentMonth);  
+            displayMonthlyStatistics();    
         }
     }
 
@@ -236,7 +228,8 @@ document.getElementById('confirmDeleteBtn').addEventListener('click', function()
     deleteTransactionId = null;
 });
 
-document.getElementById('cancelDeleteBtn').addEventListener('click', function() {
+// Hủy xóa
+document.getElementById('cancelDeleteBtn').addEventListener('click', () => {
     document.getElementById('confirmDeleteContainer').style.display = 'none';
     deleteCategoryId = null;
     deleteCategoryMonth = null;
@@ -280,58 +273,45 @@ function populateCategorySelect() {
     }
 }
 
-// Gọi hàm populateCategorySelect khi tháng được chọn
-document.getElementById('monthSelect').addEventListener('change', function() {
-    currentMonth = this.value; 
-    populateCategorySelect(); 
-});
-
-
 // Hàm thêm giao dịch
-document.getElementById('addExpenseBtn').addEventListener('click', function() {
+document.getElementById('addExpenseBtn').addEventListener('click', () => {
     const amount = document.getElementById('expenseAmount').value;
     const categoryId = document.getElementById('categorySelect').value;
     const note = document.getElementById('expenseNote').value;
+
+    // Kiểm tra thông tin giao dịch
+    if (!amount || !categoryId || !note) {
+        alert('Chưa nhập số tiền, danh mục hoặc ghi chú!');
+        return;
+    }
+
     const expenseAmount = parseFloat(amount);
-    const monthData = monthlyCategories.find(item => item.month === currentMonth);
-    const budgetWarning = document.getElementById('budgetWarning');
-
-    if (!amount || !categoryId) {
-        alert('Chưa nhập số tiền hoặc danh mục!');
-        return;
-    }
-
-    if (!note) {
-        alert('Vui lòng nhập ghi chú!');
-        return;
-    }
-
-    if (isNaN(amount) || parseFloat(amount) <= 0 || amount % 1 !== 0) {
+    if (isNaN(expenseAmount) || expenseAmount <= 0 || expenseAmount % 1 !== 0) {
         alert("Vui lòng nhập số tiền hợp lệ!");
         return;
     }
   
+    const monthData = monthlyCategories.find(item => item.month === currentMonth);
     if (!monthData) {
         alert('Chưa có ngân sách cho tháng này!');
         return;
-    } else{
-        const category = monthData.categories.find(cat => cat.id === parseInt(categoryId));
-        if (category) {
-            const spentAmount = transactions
-                .filter(tran => tran.categoryId === category.id && tran.month === currentMonth)
-                .reduce((total, tran) => total + tran.amount, 0);
+    }
 
-            const remainingAmount = category.amount - spentAmount;
+    const category = monthData.categories.find(cat => cat.id === parseInt(categoryId));
+    if (category) {
+        const spentAmount = transactions
+            .filter(tran => tran.categoryId === category.id && tran.month === currentMonth)
+            .reduce((total, tran) => total + tran.amount, 0);
 
-            if (parseFloat(amount) > remainingAmount) {
-                budgetWarning.innerHTML = `Danh mục "<b>${category.name}</b>" đã vượt hạn mức! Đã tiêu: ${(spentAmount + parseFloat(amount)).toLocaleString()} / ${category.amount.toLocaleString()} VND`;
-            }
+        const remainingAmount = category.amount - spentAmount;
+        if (expenseAmount > remainingAmount) {
+            document.getElementById('budgetWarning').innerHTML = `Danh mục "<b>${category.name}</b>" đã vượt hạn mức! Đã tiêu: ${(spentAmount + expenseAmount).toLocaleString()} / ${category.amount.toLocaleString()} VND`;
         }
     }
 
     // Tạo đối tượng giao dịch
     const transaction = {
-        id: Date.now() + Math.floor(Math.random() * 10000), 
+        id: Date.now(), 
         month: currentMonth, 
         categoryId: parseInt(categoryId),
         amount: expenseAmount,
@@ -340,8 +320,6 @@ document.getElementById('addExpenseBtn').addEventListener('click', function() {
     };
 
     transactions.push(transaction);
-
-    // Lưu dữ liệu
     localStorage.setItem('transactions', JSON.stringify(transactions));
     saveToLocalStorage(); 
 
@@ -370,30 +348,15 @@ function updateRemainingAmount() {
     }
 }
 
-// Hàm hiển thị số tiền còn lại khi chọn tháng
-document.getElementById('monthSelect').addEventListener('change', function() {
-    currentMonth = this.value;
-    updateRemainingAmount();
-    const monthData = monthlyCategories.find(item => item.month === currentMonth);
-    if (monthData) {
-        document.getElementById('remainingAmount').textContent = monthData.amount.toLocaleString() + ' VND';
-    } else {
-        document.getElementById('remainingAmount').textContent = '0 VND';
-    }
-});
-
 // Hàm xóa giao dịch
 function removeTransaction(id) {
     deleteTransactionId = id;
     isDeleteCategory = false;
-    currentPage = 1;
-    displayTransactionsByMonth(currentMonth); 
-    displayMonthlyStatistics();
     document.getElementById('confirmDeleteContainer').style.display = 'block';
 }
 
 // Tìm kiếm giao dịch theo nội dung
-document.getElementById('searchBtn').addEventListener('click', function() {
+document.getElementById('searchBtn').addEventListener('click', () => {
     const searchTerm = document.getElementById('searchInput').value.toLowerCase();
     const filteredTransactions = transactions.filter(transaction => 
         transaction.note.toLowerCase().includes(searchTerm) || 
@@ -402,42 +365,21 @@ document.getElementById('searchBtn').addEventListener('click', function() {
     currentPage = 1;
     displayTransactions(filteredTransactions);
 });
+
 // Sự kiện thay đổi cho việc sắp xếp giao dịch
 document.getElementById('sort').addEventListener('change', function() {
     const sortOrder = this.value; 
-    let sortedTransactions;
-
-    if (transactions.length > 0) {
-        sortedTransactions =transactions.sort((a, b) => {
-    switch (sortOrder) {
-        case 'asc':
-            return a.amount - b.amount;
-        case 'desc':
-            return b.amount - a.amount;
-        default:
-            return 0;
-    }
-});
-    } else {
-        sortedTransactions = []; 
-    }
-
-    // Hiển thị danh sách giao dịch đã sắp xếp
+    const sortedTransactions = transactions.sort((a, b) => {
+        return sortOrder === 'asc' ? a.amount - b.amount : b.amount - a.amount;
+    });
     displayTransactionsByMonth(currentMonth); 
 });
+
 // Hàm hiển thị giao dịch theo tháng
 function displayTransactionsByMonth(month) {
     const filteredTransactions = transactions.filter(transaction => transaction.month === month);
     displayTransactions(filteredTransactions);
 }
-
-// Sự kiện khi chọn tháng
-document.getElementById('monthSelect').addEventListener('change', function() {
-    currentMonth = this.value;
-    updateRemainingAmount(); 
-    checkOverBudgetCategory(currentMonth);
-    displayTransactionsByMonth(currentMonth); 
-});
 
 // Hàm hiển thị giao dịch
 function displayTransactions(transactionsToDisplay) {
@@ -445,8 +387,7 @@ function displayTransactions(transactionsToDisplay) {
     expensesHistory.innerHTML = '';
 
     const startIndex = (currentPage - 1) * itemsPerPage;
-    const endIndex = startIndex + itemsPerPage;
-    const paginatedTransactions = transactionsToDisplay.slice(startIndex, endIndex);
+    const paginatedTransactions = transactionsToDisplay.slice(startIndex, startIndex + itemsPerPage);
 
     paginatedTransactions.forEach(transaction => {
         const transactionDiv = document.createElement('div');
@@ -455,8 +396,7 @@ function displayTransactions(transactionsToDisplay) {
             <div class="item">${transaction.date}: ${transaction.note} - ${transaction.amount.toLocaleString()} VND</div>
             <div class="item_button">
                 <button onclick="removeTransaction(${transaction.id})">Xóa</button>
-            </div>
-        `;
+            </div>`;
         expensesHistory.appendChild(transactionDiv);
     });
 
@@ -467,7 +407,6 @@ function displayTransactions(transactionsToDisplay) {
 function renderPagination(totalItems) {
     const totalPages = Math.ceil(totalItems / itemsPerPage);
     const pageButtons = document.getElementById('pageButtons');
-
     pageButtons.innerHTML = '';
 
     for (let i = 1; i <= totalPages; i++) {
@@ -506,30 +445,22 @@ document.getElementById('nextPageBtn').addEventListener('click', () => {
 function checkOverBudgetCategory(selectedMonth) {
     const monthData = monthlyCategories.find(item => item.month === selectedMonth);
     const budgetWarning = document.getElementById('budgetWarning');
-
     budgetWarning.innerHTML = '';
 
     if (monthData) {
-        let warningMessages = [];
-
         monthData.categories.forEach(category => {
             const spentAmount = transactions
                 .filter(tran => tran.categoryId === category.id && tran.month === selectedMonth)
                 .reduce((total, tran) => total + tran.amount, 0);
 
             if (spentAmount > category.amount) {
-                warningMessages.push(
-                    `Danh mục "<b>${category.name}</b>" đã vượt hạn mức! Đã tiêu: ${spentAmount.toLocaleString()} / ${category.amount.toLocaleString()} VND<br>`
-                );
+                budgetWarning.innerHTML += `Danh mục "<b>${category.name}</b>" đã vượt hạn mức! Đã tiêu: ${spentAmount.toLocaleString()} / ${category.amount.toLocaleString()} VND<br>`;
             }
         });
-
-        if (warningMessages.length > 0) {
-            budgetWarning.innerHTML = warningMessages.join('<br>');
-        }
     }
 }
 
+// Hàm hiển thị thống kê hàng tháng
 function displayMonthlyStatistics() {
     const monthlyStats = document.getElementById('monthlyStats');
     monthlyStats.innerHTML = '';
@@ -558,7 +489,6 @@ function displayMonthlyStatistics() {
 
 // Khôi phục dữ liệu khi trang được tải
 window.onload = function() {
-    currentMonth = ""; 
     checkLogin();
     displayMonthlyStatistics();
     const monthSelect = document.getElementById('monthSelect');

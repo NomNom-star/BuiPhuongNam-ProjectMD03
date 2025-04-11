@@ -448,7 +448,7 @@ body {
 }
 .sidebar .transaction-history .move .item {
     width: 87.84px;
-    margin-right: 10px;
+    margin-right: 5px;
     height: 38px;
     border: 1px solid rgba(219, 218, 218, 0.538);
 }
@@ -462,15 +462,16 @@ body {
 .sidebar .transaction-history .move .item2 {
     width: 58.44px;
     height: 38px;
-    margin-left: 10px;
+    margin-left: 5px;
     background-color: white;
-    color: #3B82F6;
-    border: 1px solid #3B82F6;
+    color:  black;
+    background-color: rgb(236, 236, 236);
+    border: 1px solid rgb(172, 172, 172);
 }
 #pageButtons button {
-    padding: 10px 17px;
+    padding: 9px 15px;
     cursor: pointer;
-    border: 0.5 rgb(70, 94, 255) solid;
+    border: 0.5 gray solid;
 }
 #pageButtons .active {
     background-color: #ffffff;
@@ -497,7 +498,7 @@ body {
     align-items: center;
     color: red;
 }
-/* Container Thống kê */
+
 .sidebar .monthly-statistics {
     max-width: 768px;
     width: 100%;
@@ -506,11 +507,10 @@ body {
     padding: 20px;
     display: flex;
     flex-direction: column;
-    gap: 0; /* bỏ khoảng trống giữa các item */
+    gap: 0;
     border: 1px solid #ddd;
 }
 
-/* Dòng Header + Dòng dữ liệu */
 .sidebar .monthly-statistics .item {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr; 
