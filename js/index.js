@@ -72,7 +72,6 @@ document.getElementById('saveBudgetBtn').addEventListener('click', () => {
 // Sự kiện khi chọn tháng
 document.getElementById('monthSelect').addEventListener('change', function() {
     const selectedMonth = this.value;
-    currentMonth = selectedMonth;
     populateCategorySelect();
     displayCategoriesByMonth(selectedMonth);
     updateRemainingAmount();
@@ -109,7 +108,7 @@ document.getElementById('addCategoryBtn').addEventListener('click', () => {
         monthlyCategories.push({ id: Date.now(), month: currentMonth, categories: [category], amount: 0 });
     }
 
-    // Hiển thị danh sách danh mục
+    // Render lại dữ liệu 
     updateCategoryList(currentMonth);
     saveToLocalStorage(); 
     populateCategorySelect();
