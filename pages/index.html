@@ -59,12 +59,36 @@
 
           </div>
         </div>
+
+        <div class="edit-category-container" id="editCategoryContainer">
+          <h3>Sửa Danh Mục</h3>
+          <input type="text" id="editCategoryName" placeholder="Tên danh mục" />
+          <input type="number" id="editCategoryLimit" placeholder="Giới hạn (VND)" />
+          <div id="error-message" style="color: red; display: none;"></div> 
+          <button id="saveEditCategoryBtn">Lưu thay đổi</button>
+          <button id="cancelEditCategoryBtn">Hủy</button>
+        </div>
+
+        <div class="confirm-delete-container" id="confirmDeleteContainer" style="display: none;">
+          <h3>Xác Nhận Xóa</h3>
+          <p>Bạn có chắc chắn muốn xóa hay không?</p>
+          <button id="confirmDeleteBtn">Xóa</button>
+          <button id="cancelDeleteBtn">Hủy</button>
+        </div>
+        
         <div class="expense-input-container">
           <input type="number" id="expenseAmount" placeholder="Số tiền" />
-          <div>Tiền chi tiêu</div>
+        
+          <select id="categorySelect" >
+            <option value="">Tiền chi tiêu</option>
+            <!-- Render JS -->
+          </select>
+        
           <input type="text" id="expenseNote" placeholder="Ghi chú" />
+          
           <button id="addExpenseBtn">Thêm</button>
         </div>
+        
         <div class="transaction-history">
           <p>🧾 Lịch sử giao dịch</p>
           <div class="select">
@@ -76,20 +100,18 @@
             <div>
               <select name="" id="sort">
                 <option value="">Sắp xếp theo giá</option>
-                <option value="">Tăng dần</option>
-                <option value="">Giảm dần</option>
+                <option value="asc">Tăng dần</option>
+                <option value="desc">Giảm dần</option>
               </select>
             </div>
           </div>
           <div class="content3" id="expensesHistory">
-
+            
           </div>
           <div class="move">
-            <button class="item">Previous</button>
-            <button class="button">1</button>
-            <button class="button">2</button>
-            <button class="button">3</button>
-            <button class="item2">Next</button>
+            <button class="item" id="prevPageBtn">Previous</button>
+            <div id="pageButtons"></div> 
+            <button class="item2" id="nextPageBtn">Next</button>
           </div>
         </div>
         <div class="budget-warning" id="budgetWarning">

@@ -173,7 +173,6 @@ body {
 .sidebar .category-management {
     max-width: 720px;
     width: 100%;
-    height: 258px;
     background-color: #FFFFFF;
     border-radius: 12px;
     padding: 15px;
@@ -211,6 +210,8 @@ body {
 .sidebar .category-management .content2 {
     max-width: 672px;
     width: 100%;
+    height: 30px;
+    margin-top: 10px;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -221,6 +222,100 @@ body {
     background-color: #FFFFFF;
     color: red;
 }
+.edit-category-container {
+    position: fixed; 
+    top: 50%; 
+    left: 50%; 
+    transform: translate(-50%, -50%); 
+    max-width: 400px; 
+    width: 90%; 
+    background-color: #ffffff; 
+    border-radius: 12px; 
+    padding: 20px; 
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); 
+    z-index: 1000; 
+    display: none; 
+}
+
+.edit-category-container h3 {
+    color: #333; 
+    text-align: center; 
+}
+
+.edit-category-container input {
+    width: 100%; 
+    height: 42px;
+    border-radius: 6px; 
+    border: 1px solid rgba(218, 218, 218, 0.5); 
+    padding-left: 10px; 
+    font-size: 16px; 
+    margin-bottom: 15px; 
+}
+
+.edit-category-container button {
+    width: 100%; 
+    height: 40px; 
+    border-radius: 6px; 
+    border: none; 
+    color: white;
+    cursor: pointer;
+}
+
+.edit-category-container #saveEditCategoryBtn {
+    background-color: #4F46E5; 
+}
+
+.edit-category-container #cancelEditCategoryBtn {
+    background-color: #FF4D4D; 
+    margin-top: 10px;
+}
+
+
+.edit-category-container button:hover {
+    opacity: 0.9; 
+}
+.confirm-delete-container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    max-width: 400px;
+    width: 90%;
+    background-color: #ffffff;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+}
+
+.confirm-delete-container h3 {
+    color: #333;
+    text-align: center;
+}
+
+.confirm-delete-container p {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.confirm-delete-container button {
+    width: 48%;
+    height: 40px;
+    border-radius: 6px;
+    border: none;
+    color: white;
+    cursor: pointer;
+    margin: 2 20%;
+}
+
+.confirm-delete-container #confirmDeleteBtn {
+    background-color: #FF4D4D;
+}
+
+.confirm-delete-container #cancelDeleteBtn {
+    background-color: #4F46E5;
+}
+
 .sidebar .expense-input-container {
     max-width: 720px;
     width: 100%;
@@ -261,6 +356,21 @@ body {
     justify-content: center;
     align-items: center;
 }
+.sidebar .expense-input-container #categorySelect {
+    background-color: #E2E2E2; 
+    border: none; 
+    border-radius: 4px; 
+    padding: 10px; 
+    font-size: 16px; 
+    width: 100%; 
+    cursor: pointer; 
+}
+
+
+.sidebar .expense-input-container #categorySelect option {
+    background-color: #ffffff; 
+    color: #333; 
+}
 .sidebar .transaction-history {
     max-width: 720px;
     width: 100%;
@@ -271,6 +381,7 @@ body {
     display: flex;
     flex-direction: column;
     gap: 10px;
+    position: relative;
 }
 .sidebar .transaction-history p {
     color: red;
@@ -294,9 +405,13 @@ body {
     gap: 10px;
 }
 .sidebar .transaction-history .select div input {
-    border: none;
-    width: 106px;
-    height: 17px;
+    border: none; 
+    border-radius: 4px; 
+    padding: 10px; 
+    font-size: 16px; 
+    width: 99%; 
+    height: 98%;
+    cursor: pointer; 
 }
 .sidebar .transaction-history .select button {
     width: 38px;
@@ -306,9 +421,12 @@ body {
     background-color: #1D4ED8;
     color: white;
 }
+
 .sidebar .transaction-history .content2 {
     max-width: 672px;
     width: 100%;
+    height: 30px;
+    margin-top: 10px;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -322,12 +440,15 @@ body {
 .sidebar .transaction-history .move {
     display: flex;
     justify-content: center;
-    align-items: center;
-    position: relative;
-    top: 230px;
+    position: absolute;     
+    bottom: 5%;
+    left: 35%;
+
+
 }
 .sidebar .transaction-history .move .item {
     width: 87.84px;
+    margin-right: 10px;
     height: 38px;
     border: 1px solid rgba(219, 218, 218, 0.538);
 }
@@ -341,15 +462,27 @@ body {
 .sidebar .transaction-history .move .item2 {
     width: 58.44px;
     height: 38px;
+    margin-left: 10px;
     background-color: white;
     color: #3B82F6;
-    border: 1px solid rgba(25, 138, 203, 0.345);
+    border: 1px solid #3B82F6;
+}
+#pageButtons button {
+    padding: 10px 17px;
+    cursor: pointer;
+    border: 0.5 rgb(70, 94, 255) solid;
+}
+#pageButtons .active {
+    background-color: #ffffff;
+    color: rgb(70, 94, 255);
 }
 .sidebar .transaction-history #sort {
-    border: none;
-    -moz-appearance: none;
-	-webkit-appearance: none;
-	appearance: none;
+    border: none; 
+    border-radius: 5px;  
+    font-size: 16px; 
+    width: 100%; 
+    height: 97%;
+    cursor: pointer; 
     
 }
 .sidebar .budget-warning {
@@ -358,28 +491,38 @@ body {
     height: 68px;
     border-radius: 12px;
     background-color: #FFFFFF;
-    display: flex;
     padding-left: 25px;
+    padding-top: 20px;
+    padding-bottom: 10px;
     align-items: center;
     color: red;
 }
+/* Container Thống kê */
 .sidebar .monthly-statistics {
     max-width: 768px;
     width: 100%;
-    height: 195px;
     border-radius: 12px;
     background-color: #FFFFFF;
+    padding: 20px;
     display: flex;
     flex-direction: column;
-    padding: 20px;
-    gap: 10px;
+    gap: 0; /* bỏ khoảng trống giữa các item */
+    border: 1px solid #ddd;
 }
+
+/* Dòng Header + Dòng dữ liệu */
 .sidebar .monthly-statistics .item {
-    max-width: 720px;
-    width: 100%;
-    height: 37px;
-    border-bottom: 1px solid rgba(215, 212, 212, 0.51);
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr; 
+    align-items: center;
+    padding: 8px 12px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    font-size: 14px;
+    font-weight: 500;
 }
+
+
+
 .footer {
     width: 100%;
     height: 68px;
@@ -389,6 +532,7 @@ body {
     background-color: #4338CA;
     color: white;
 }
+
 @media screen and (max-width:768px) {
     .header {
         width: 100%;
